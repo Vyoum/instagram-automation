@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Post</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .post-container {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+        }
+
+        .image-preview {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+
+        .caption {
+            white-space: pre-wrap;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .hashtags {
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn-approve {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn-reject {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .feedback-form {
+            margin-top: 1rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Review Your Post</h1>
+
+    <div class="post-container">
+        <h3>Generated Image (Mock)</h3>
+        <img src="<%= data.imageUrl %>" alt="<%= data.imagePrompt %>" class="image-preview">
+
+        <h3>Caption</h3>
+        <div class="caption">
+            <%= data.generatedCaption %>
+        </div>
+
+        <div class="hashtags">
+            <% data.generatedHashtags.forEach(tag=> { %>
+                <%= tag %>
+                    <% }); %>
+        </div>
+
+        <p><strong>Original Topic:</strong>
+            <%= data.topic %>
+        </p>
+    </div>
+
+    <div class="actions">
+        <!-- Approve Form -->
+        <form action="/decision" method="POST">
+            <input type="hidden" name="action" value="approve">
+            <button type="submit" class="btn-approve">Approve & Post</button>
+        </form>
+
+        <!-- Reject Button (toggles form) -->
+        <button type="button" class="btn-reject"
+            onclick="document.getElementById('feedbackForm').style.display='block'">Request Changes</button>
+    </div>
+
+    <!-- Feedback Form for Rejection -->
+    <div id="feedbackForm" class="feedback-form">
+        <form action="/decision" method="POST">
+            <input type="hidden" name="action" value="revise">
+            <label for="feedback">Describe what to improve OR provide new instructions:</label>
+            <textarea id="feedback" name="feedback" rows="3" style="width: 100%; margin: 0.5rem 0;" required></textarea>
+            <button type="submit" class="btn-reject" style="background-color: #ffc107; color: black;">Submit
+                Feedback</button>
+            <button type="button" onclick="document.getElementById('feedbackForm').style.display='none'">Cancel</button>
+        </form>
+    </div>
+</body>
+
+</html>
