@@ -30,6 +30,10 @@ class InstagramService {
 
             const creationId = containerResponse.data.id;
             logger.info(`[Instagram Service] Media container created. ID: ${creationId}`);
+
+            // Wait for media to be ready
+            await this.waitForMedia(creationId);
+
             const publishUrl = `${this.baseUrl}/${this.accountId}/media_publish`;
             const publishParams = {
                 creation_id: creationId,
@@ -56,6 +60,43 @@ class InstagramService {
             }
             throw error;
         }
+    }
+
+    async waitForMedia(creationId) {
+        let attempts = 0;
+        const maxAttempts = 10;
+        const delay = 3000; // 3 seconds
+
+        logger.info(`[Instagram Service] Waiting for media container ${creationId} to be ready...`);
+
+        while (attempts < maxAttempts) {
+            try {
+                const statusUrl = `${this.baseUrl}/${creationId}`;
+                const statusParams = {
+                    fields: 'status_code,status',
+                    access_token: this.accessToken
+                };
+
+                const response = await axios.get(statusUrl, { params: statusParams });
+                const status = response.data.status_code; // FINISHED, IN_PROGRESS, ERROR
+
+                logger.info(`[Instagram Service] Media status: ${status}`);
+
+                if (status === 'FINISHED') {
+                    return true;
+                } else if (status === 'ERROR') {
+                    throw new Error(`Media container verification failed: ${status}`);
+                }
+
+                // Wait before next check
+                await new Promise(resolve => setTimeout(resolve, delay));
+                attempts++;
+            } catch (error) {
+                logger.error(`[Instagram Service] Error checking status: ${error.message}`);
+                throw error;
+            }
+        }
+        throw new Error("Media container timed out processing.");
     }
 }
 
