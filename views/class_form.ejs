@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add New Class</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+    label { display: block; margin-top: 0.75rem; }
+    input, select { width: 100%; padding: 0.5rem; margin-top: 0.25rem; }
+    .row { display: flex; gap: 1rem; }
+    .row > div { flex: 1; }
+    .actions { margin-top: 1rem; display: flex; gap: 1rem; }
+    .btn { padding: 0.6rem 1rem; border: none; border-radius: 4px; cursor: pointer; }
+    .btn-primary { background-color: #28a745; color: white; }
+    .btn-secondary { background-color: #ddd; color: black; }
+    .error { color: red; margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Add New Class</h1>
+
+  <% if (errorMessage) { %>
+    <div class="error"><%= errorMessage %></div>
+  <% } %>
+
+  <form action="/classes" method="POST">
+    <label for="name">Class Name</label>
+    <input id="name" name="name" type="text" placeholder="Yoga Basics" required value="<%= (values && values.name) ? values.name : '' %>">
+
+    <label for="instructor">Instructor</label>
+    <input id="instructor" name="instructor" type="text" placeholder="Jane Doe" required value="<%= (values && values.instructor) ? values.instructor : '' %>">
+
+    <label for="level">Level</label>
+    <select id="level" name="level" required>
+      <option value="">Select level</option>
+      <option value="beg" <%= (values && values.level === 'beg') ? 'selected' : '' %>>Beginner</option>
+      <option value="inter" <%= (values && values.level === 'inter') ? 'selected' : '' %>>Intermediate</option>
+      <option value="advanced" <%= (values && values.level === 'advanced') ? 'selected' : '' %>>Advanced</option>
+    </select>
+
+    <div class="row">
+      <div>
+        <label for="date">Date</label>
+        <input id="date" name="date" type="date" required value="<%= (values && values.date) ? values.date : '' %>">
+      </div>
+      <div>
+        <label for="time">Time</label>
+        <input id="time" name="time" type="time" required value="<%= (values && values.time) ? values.time : '' %>">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn btn-primary">Create Class</button>
+      <a href="/classes" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</body>
+</html>
