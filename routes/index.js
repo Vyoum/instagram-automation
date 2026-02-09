@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
 const classesController = require('../controllers/classesController');
+const subscribersController = require('../controllers/subscribersController');
 
 const logger = require('../services/logger');
 
@@ -25,5 +26,8 @@ router.post('/decision', postController.handleDecision);
 router.get('/classes', classesController.renderList);
 router.get('/classes/new', classesController.renderForm);
 router.post('/classes', classesController.create);
+
+// Subscribers
+router.get('/subscribers', subscribersController.renderList);
 
 module.exports = router;
